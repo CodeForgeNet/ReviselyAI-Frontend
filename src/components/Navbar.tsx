@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"; // Import useLocation
 import { signOut, onAuthStateChanged, type User } from "firebase/auth";
 import { auth } from "../firebase/config";
 
@@ -7,6 +7,7 @@ export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const location = useLocation(); // Get current location
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -17,7 +18,10 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     };
@@ -32,6 +36,17 @@ export default function Navbar() {
     return email[0].toUpperCase();
   };
 
+  const getLinkClass = (path: string) => {
+    const baseClasses =
+      "px-3 py-2 rounded-md border border-white transition-colors duration-200";
+    const activeClasses = "bg-blue-700"; // Active style
+    const inactiveClasses = "hover:bg-blue-700"; // Inactive hover style
+
+    return `${baseClasses} ${
+      location.pathname === path ? activeClasses : inactiveClasses
+    }`;
+  };
+
   return (
     <nav className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -40,17 +55,14 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Link
-            to="/"
-            className="px-3 py-2 rounded-md border border-white hover:bg-blue-700 transition-colors duration-200"
-          >
+          <Link to="/" className={getLinkClass("/")}>
             Dashboard
           </Link>
-          <Link
-            to="/progress"
-            className="px-3 py-2 rounded-md border border-white hover:bg-blue-700 transition-colors duration-200"
-          >
+          <Link to="/progress" className={getLinkClass("/progress")}>
             Progress
+          </Link>
+          <Link to="/revisechat" className={getLinkClass("/revisechat")}>
+            ReviselyChat
           </Link>
           <div className="relative" ref={dropdownRef}>
             <button
