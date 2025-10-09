@@ -3,9 +3,12 @@ import axios from "../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
 interface PDF {
-  id: string; // Changed from number to string
-  filename: string;
-  created_at: string; // Changed from uploaded_at to created_at
+  id: string;
+  title: string;
+  user_id: string;
+  is_indexed: boolean;
+  created_at: string;
+  file_id: string;
 }
 
 export default function Dashboard() {
