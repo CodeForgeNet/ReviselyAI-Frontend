@@ -3,9 +3,6 @@ import { Document, Page, pdfjs } from "react-pdf";
 import axiosInstance from "../api/axiosInstance";
 import { getAuth } from "firebase/auth";
 
-// Set worker path to public directory
-pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
-
 interface PdfViewerProps {
   pdfFileId: string;
   onError?: (error: Error) => void;
@@ -17,6 +14,11 @@ const PdfViewer = React.memo(({ pdfFileId, onError }: PdfViewerProps) => {
   const [pdfData, setPdfData] = useState<ArrayBuffer | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    // Set worker path to public directory only once when component mounts
+    pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
+  }, []);
 
   useEffect(() => {
     console.log("PdfViewer mounted/updated with pdfFileId:", pdfFileId);
