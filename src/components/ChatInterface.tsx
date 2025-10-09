@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../api/axiosInstance";
+import ReactMarkdown from "react-markdown"; // Import ReactMarkdown
 
 interface Message {
   role: "user" | "assistant";
@@ -102,7 +103,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                       : "bg-gray-100 text-gray-800"
                   }`}
                 >
-                  <p className="whitespace-pre-line">{msg.content}</p>
+                  <ReactMarkdown>{msg.content}</ReactMarkdown> {/* Use ReactMarkdown */}
                 </div>
               </div>
             ))}
