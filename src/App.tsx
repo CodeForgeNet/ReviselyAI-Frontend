@@ -8,6 +8,7 @@ import QuizPage from "./pages/QuizPage";
 import ChatPage from "./pages/ChatPage";
 import Navbar from "./components/Navbar";
 import QuizConfigPage from "./pages/QuizConfigPage";
+import ProgressPage from "./pages/ProgressPage";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -53,6 +54,10 @@ export default function App() {
           <Route
             path="/chat/:id"
             element={user ? <ChatPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/progress"
+            element={user ? <ProgressPage /> : <Navigate to="/login" />}
           />
         </Routes>
       </div>

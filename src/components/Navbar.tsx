@@ -1,8 +1,37 @@
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged, type User } from "firebase/auth";
 import { auth } from "../firebase/config";
 
 export default function Navbar() {
+  const [user, setUser] = useState<User | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+    });
+    return () => unsub();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
+
+  const getInitials = (email: string | null | undefined) => {
+    if (!email) return "?";
+    return email[0].toUpperCase();
+  };
+
   return (
     <nav className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -17,9 +46,33 @@ export default function Navbar() {
           >
             Dashboard
           </Link>
-          <button onClick={() => signOut(auth)} className="btn btn-danger">
-            Logout
-          </button>
+          <Link
+            to="/progress"
+            className="px-3 py-2 rounded-md border border-white hover:bg-blue-700 transition-colors duration-200"
+          >
+            Progress
+          </Link>
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="w-10 h-10 rounded-full bg-blue-700 flex items-center justify-center font-bold text-white"
+            >
+              {getInitials(user?.email)}
+            </button>
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black">
+                <button
+                  onClick={() => {
+                    signOut(auth);
+                    setDropdownOpen(false);
+                  }}
+                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </nav>
