@@ -16,7 +16,6 @@ const PdfViewer = React.memo(({ pdfFileId, onError }: PdfViewerProps) => {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    // Set worker path to public directory only once when component mounts
     pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
   }, []);
 
@@ -38,7 +37,7 @@ const PdfViewer = React.memo(({ pdfFileId, onError }: PdfViewerProps) => {
     try {
       const auth = getAuth();
       const user = auth.currentUser;
-      
+
       if (!user) {
         throw new Error("User not authenticated");
       }
@@ -112,8 +111,8 @@ const PdfViewer = React.memo(({ pdfFileId, onError }: PdfViewerProps) => {
     return (
       <div className="flex flex-col items-center justify-center h-full text-red-500">
         <p>Error loading PDF: {error.message}</p>
-        <button 
-          onClick={loadPdf} 
+        <button
+          onClick={loadPdf}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
         >
           Retry
@@ -132,14 +131,14 @@ const PdfViewer = React.memo(({ pdfFileId, onError }: PdfViewerProps) => {
             onLoadError={onDocumentLoadError}
             className="pdf-document"
           >
-            <Page 
-              pageNumber={pageNumber} 
+            <Page
+              pageNumber={pageNumber}
               className="pdf-page"
               renderTextLayer={false}
               renderAnnotationLayer={false}
             />
           </Document>
-          
+
           {numPages && (
             <div className="pdf-controls mt-4 flex items-center justify-center space-x-4">
               <button

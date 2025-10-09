@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom"; // Import useLocation
+import { Link, useLocation } from "react-router-dom";
 import { signOut, onAuthStateChanged, type User } from "firebase/auth";
 import { auth } from "../firebase/config";
 
@@ -7,7 +7,7 @@ export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const location = useLocation(); // Get current location
+  const location = useLocation();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -39,8 +39,8 @@ export default function Navbar() {
   const getLinkClass = (path: string) => {
     const baseClasses =
       "px-3 py-2 rounded-md border border-white transition-colors duration-200";
-    const activeClasses = "bg-blue-700"; // Active style
-    const inactiveClasses = "hover:bg-blue-700"; // Inactive hover style
+    const activeClasses = "bg-blue-700";
+    const inactiveClasses = "hover:bg-blue-700";
 
     return `${baseClasses} ${
       location.pathname === path ? activeClasses : inactiveClasses

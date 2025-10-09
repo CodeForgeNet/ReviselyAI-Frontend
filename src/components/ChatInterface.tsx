@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../api/axiosInstance";
-import ReactMarkdown from "react-markdown"; // Import ReactMarkdown
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "assistant";
@@ -37,7 +37,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   }, [messages, messagesEndRef]);
 
   const askQuestion = async () => {
-    if (!question.trim() || !id) return; // Ensure id is available
+    if (!question.trim() || !id) return;
 
     const userQuestion = question.trim();
     setQuestion("");
@@ -46,7 +46,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
     try {
       const res = await axios.post("/chat/ask", {
-        pdf_id: id, // Changed from Number(id) to id
+        pdf_id: id,
         question: userQuestion,
       });
 
@@ -101,7 +101,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                       : "bg-gray-100 text-gray-800"
                   }`}
                 >
-                  <ReactMarkdown>{msg.content}</ReactMarkdown> {/* Use ReactMarkdown */}
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>{" "}
+                  {/* Use ReactMarkdown */}
                 </div>
               </div>
             ))}

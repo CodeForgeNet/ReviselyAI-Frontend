@@ -15,7 +15,7 @@ interface PdfInfo {
 }
 
 export default function ChatPage() {
-  const { id } = useParams<{ id: string }>(); // Specify id as string
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [pdfInfo, setPdfInfo] = useState<PdfInfo | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -39,12 +39,10 @@ export default function ChatPage() {
 
   const handlePdfError = useCallback((error: Error) => {
     console.error("PDF Viewer Error:", error);
-    // Optionally display an error message to the user
   }, []);
 
   return (
     <div className="flex h-[86vh] overflow-hidden">
-      {/* Left Pane: PDF Viewer */}
       <div className="w-1/2 p-4 border-r border-gray-200 overflow-y-auto">
         {pdfInfo?.file_id ? (
           <PdfViewer pdfFileId={pdfInfo.file_id} onError={handlePdfError} />
@@ -55,7 +53,6 @@ export default function ChatPage() {
         )}
       </div>
 
-      {/* Right Pane: Chat Interface */}
       <ChatInterface
         pdfInfo={pdfInfo}
         messagesEndRef={messagesEndRef}

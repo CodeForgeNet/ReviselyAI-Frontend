@@ -100,18 +100,26 @@ export default function QuizPage() {
   };
 
   const selectMcqAnswer = (questionIndex: number, optionIndex: number) => {
-    setAnswers((prev) => ({ ...prev, mcq: { ...prev.mcq, [questionIndex]: optionIndex } }));
+    setAnswers((prev) => ({
+      ...prev,
+      mcq: { ...prev.mcq, [questionIndex]: optionIndex },
+    }));
   };
 
   const handleSaqChange = (questionIndex: number, value: string) => {
-    setAnswers((prev) => ({ ...prev, saq: { ...prev.saq, [questionIndex]: value } }));
+    setAnswers((prev) => ({
+      ...prev,
+      saq: { ...prev.saq, [questionIndex]: value },
+    }));
   };
 
   const handleLaqChange = (questionIndex: number, value: string) => {
-    setAnswers((prev) => ({ ...prev, laq: { ...prev.laq, [questionIndex]: value } }));
+    setAnswers((prev) => ({
+      ...prev,
+      laq: { ...prev.laq, [questionIndex]: value },
+    }));
   };
 
-  // If no state was passed, handle gracefully
   if (!state) {
     return (
       <div className="text-center py-12">
@@ -235,7 +243,9 @@ export default function QuizPage() {
                 <p className="text-sm font-semibold">Answer Outline:</p>
                 <ul className="list-disc list-inside">
                   {q.answer_outline.map((point, j) => (
-                    <li key={j} className="text-sm">{renderMarkdown(point)}</li>
+                    <li key={j} className="text-sm">
+                      {renderMarkdown(point)}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -268,7 +278,8 @@ export default function QuizPage() {
             <div className="mt-4">
               <h3 className="text-lg font-bold">Multiple Choice Questions</h3>
               <p>
-                Score: {result.results.mcq.filter((r) => r.is_correct).length} / {result.results.mcq.length}
+                Score: {result.results.mcq.filter((r) => r.is_correct).length} /{" "}
+                {result.results.mcq.length}
               </p>
             </div>
           )}
@@ -277,7 +288,8 @@ export default function QuizPage() {
             <div className="mt-4">
               <h3 className="text-lg font-bold">Short Answer Questions</h3>
               <p>
-                Score: {result.results.saq.filter((r) => r.is_correct).length} / {result.results.saq.length}
+                Score: {result.results.saq.filter((r) => r.is_correct).length} /{" "}
+                {result.results.saq.length}
               </p>
             </div>
           )}
@@ -286,12 +298,16 @@ export default function QuizPage() {
             <div className="mt-4">
               <h3 className="text-lg font-bold">Long Answer Questions</h3>
               <p>
-                Score: {result.results.laq.filter((r) => r.is_correct).length} / {result.results.laq.length}
+                Score: {result.results.laq.filter((r) => r.is_correct).length} /{" "}
+                {result.results.laq.length}
               </p>
             </div>
           )}
 
-          <button onClick={() => navigate("/")} className="btn btn-primary mt-6">
+          <button
+            onClick={() => navigate("/")}
+            className="btn btn-primary mt-6"
+          >
             Back to Dashboard
           </button>
         </div>

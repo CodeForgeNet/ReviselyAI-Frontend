@@ -26,7 +26,7 @@ export default function Dashboard() {
   const fetchPDFs = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/upload/list"); // Changed from /files/list to /upload/list
+      const res = await axios.get("/upload/list");
       setPdfs(res.data);
     } catch (error) {
       console.error("Error fetching PDFs:", error);
@@ -43,9 +43,9 @@ export default function Dashboard() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await axios.post("/upload/upload", formData, { // Changed from /files/upload to /upload/upload
+      const res = await axios.post("/upload/upload", formData, {
         headers: {
-          "Content-Type": "multipart/form-data", // Corrected Content-Type for FormData
+          "Content-Type": "multipart/form-data",
         },
       });
 
@@ -62,18 +62,18 @@ export default function Dashboard() {
     }
   };
 
-  const generateQuiz = (id: string) => { // Changed id from number to string
+  const generateQuiz = (id: string) => {
     navigate(`/quiz/config/${id}`);
   };
 
-  const openChat = (id: string) => { // Changed id from number to string
+  const openChat = (id: string) => {
     navigate(`/chat/${id}`);
   };
 
-  const handleDelete = async (id: string) => { // Changed id from number to string
+  const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this PDF?")) {
       try {
-        await axios.delete(`/upload/${id}`); // Changed from /files/${id} to /upload/${id}
+        await axios.delete(`/upload/${id}`);
         setPdfs(pdfs.filter((pdf) => pdf.id !== id));
       } catch (error) {
         console.error("Error deleting PDF:", error);
@@ -132,7 +132,7 @@ export default function Dashboard() {
                 <div>
                   <p className="font-medium text-gray-800">{pdf.title}</p>
                   <p className="text-sm text-gray-500">
-                    {new Date(pdf.created_at).toLocaleDateString()} {/* Changed uploaded_at to created_at */}
+                    {new Date(pdf.created_at).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="flex gap-2">

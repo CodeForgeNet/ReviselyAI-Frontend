@@ -49,7 +49,6 @@ export default function ProgressPage() {
         <p>No quiz attempts found.</p>
       ) : (
         <div className="space-y-8">
-          {/* Overall Summary */}
           <div className="bg-white p-6 rounded-lg shadow-sm text-center">
             <h2 className="text-xl font-bold mb-4">Overall Performance</h2>
             <div className="grid grid-cols-3 gap-4">
@@ -74,12 +73,17 @@ export default function ProgressPage() {
             </div>
           </div>
 
-          {/* Detailed Attempts */}
           <div className="space-y-4">
             <h2 className="text-xl font-bold mb-4">Recent Attempts</h2>
             {progressData.attempts.map((attempt) => (
-              <div key={attempt.attempt_id} className="bg-white p-4 rounded-lg shadow-sm">
-                <p className="text-lg font-semibold">Attempt on: {new Date(attempt.created_at).toLocaleDateString()}</p>
+              <div
+                key={attempt.attempt_id}
+                className="bg-white p-4 rounded-lg shadow-sm"
+              >
+                <p className="text-lg font-semibold">
+                  Attempt on:{" "}
+                  {new Date(attempt.created_at).toLocaleDateString()}
+                </p>
                 <div className="grid grid-cols-3 gap-4 mt-2">
                   <div>
                     <p className="text-gray-600">MCQ Score</p>
@@ -94,7 +98,9 @@ export default function ProgressPage() {
                     <p className="font-bold">{attempt.laq_score}</p>
                   </div>
                 </div>
-                <p className="text-right mt-2 text-gray-700">Overall: {attempt.overall_score}</p>
+                <p className="text-right mt-2 text-gray-700">
+                  Overall: {attempt.overall_score}
+                </p>
               </div>
             ))}
           </div>

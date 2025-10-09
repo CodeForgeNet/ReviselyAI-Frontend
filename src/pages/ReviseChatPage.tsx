@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import ReviseChatInterface from "../components/ReviseChatInterface";
 import ChatHistoryDrawer from "../components/ChatHistoryDrawer";
 
@@ -18,7 +18,8 @@ interface ReviseChatSession {
 }
 
 const ReviseChatPage: React.FC = () => {
-  const [currentSession, setCurrentSession] = useState<ReviseChatSession | null>(null);
+  const [currentSession, setCurrentSession] =
+    useState<ReviseChatSession | null>(null);
 
   const handleSelectSession = (session: ReviseChatSession | null) => {
     setCurrentSession(session);
@@ -30,13 +31,11 @@ const ReviseChatPage: React.FC = () => {
 
   return (
     <div className="flex h-[88vh] overflow-hidden">
-      {/* Left Drawer for Chat History */}
       <ChatHistoryDrawer
         onSelectSession={handleSelectSession}
         currentSessionId={currentSession?.id || null}
       />
 
-      {/* Main Chat Window and Input Box */}
       <ReviseChatInterface
         currentSession={currentSession}
         onSessionUpdate={handleSessionUpdate}

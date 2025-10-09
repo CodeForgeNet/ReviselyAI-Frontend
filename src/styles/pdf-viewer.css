@@ -1,4 +1,3 @@
-/* Add this in a styles.css file and import it, or add inline in your component */
 .react-pdf__Document {
   display: flex;
   flex-direction: column;

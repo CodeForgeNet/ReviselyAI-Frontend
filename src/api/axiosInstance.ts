@@ -8,7 +8,6 @@ const instance = axios.create({
   },
 });
 
-// Attach Firebase token automatically
 instance.interceptors.request.use(async (config) => {
   const auth = getAuth();
   const user = auth.currentUser;
@@ -17,17 +16,20 @@ instance.interceptors.request.use(async (config) => {
     config.headers.Authorization = `Bearer ${token}`;
     console.log(`[Axios] Request to ${config.url} with auth token`);
   } else {
-    console.warn(`[Axios] Request to ${config.url} WITHOUT auth token - user not logged in`);
+    console.warn(
+      `[Axios] Request to ${config.url} WITHOUT auth token - user not logged in`
+    );
   }
   return config;
 });
 
-// Add response interceptor for better error logging
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      console.error("[Axios] 401 Unauthorized - Token may be expired or invalid");
+      console.error(
+        "[Axios] 401 Unauthorized - Token may be expired or invalid"
+      );
     }
     return Promise.reject(error);
   }

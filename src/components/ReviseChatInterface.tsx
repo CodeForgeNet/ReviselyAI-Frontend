@@ -48,13 +48,20 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
 
     const userQuestion = question.trim();
     setQuestion("");
-    setMessages((prev) => [...prev, { role: "user", content: userQuestion, timestamp: new Date().toISOString() }]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "user",
+        content: userQuestion,
+        timestamp: new Date().toISOString(),
+      },
+    ]);
     setLoading(true);
 
     try {
       const res = await axios.post("/revisechat/ask", {
         question: userQuestion,
-        session_id: currentSession?.id || null, // Send session_id if available
+        session_id: currentSession?.id || null,
       });
 
       const newAiMessage: ReviseChatMessage = {
@@ -65,25 +72,40 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
 
       setMessages((prev) => [...prev, newAiMessage]);
 
-      // If a new session was created, update the parent state
       if (res.data.session_id && !currentSession) {
         onSessionUpdate({
           id: res.data.session_id,
-          user_id: "", // This will be filled by the backend on next fetch
-          title: userQuestion.substring(0, 50) + (userQuestion.length > 50 ? "..." : ""),
-          messages: [...messages, { role: "user", content: userQuestion, timestamp: new Date().toISOString() }, newAiMessage],
+          user_id: "",
+          title:
+            userQuestion.substring(0, 50) +
+            (userQuestion.length > 50 ? "..." : ""),
+          messages: [
+            ...messages,
+            {
+              role: "user",
+              content: userQuestion,
+              timestamp: new Date().toISOString(),
+            },
+            newAiMessage,
+          ],
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         });
       } else if (currentSession) {
-        // If existing session, update its messages in parent state
         onSessionUpdate({
           ...currentSession,
-          messages: [...messages, { role: "user", content: userQuestion, timestamp: new Date().toISOString() }, newAiMessage],
+          messages: [
+            ...messages,
+            {
+              role: "user",
+              content: userQuestion,
+              timestamp: new Date().toISOString(),
+            },
+            newAiMessage,
+          ],
           updated_at: new Date().toISOString(),
         });
       }
-
     } catch (error) {
       console.error("Error asking question:", error);
       setMessages((prev) => [
@@ -106,7 +128,8 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
           <div className="text-center py-12 text-gray-500">
             <p>Start a conversation with your AI companion!</p>
             <p className="text-sm mt-2">
-              For example: "Explain quantum physics" or "Summarize the French Revolution"
+              For example: "Explain quantum physics" or "Summarize the French
+              Revolution"
             </p>
           </div>
         ) : (

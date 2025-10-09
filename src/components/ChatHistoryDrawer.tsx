@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import axios from "../api/axiosInstance";
 
 interface ReviseChatMessage {
@@ -33,7 +33,9 @@ const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
 
   const fetchChatHistory = async () => {
     try {
-      const response = await axios.get<ReviseChatSession[]>("/revisechat/history");
+      const response = await axios.get<ReviseChatSession[]>(
+        "/revisechat/history"
+      );
       setSessions(response.data);
     } catch (error) {
       console.error("Error fetching chat history:", error);
@@ -41,7 +43,7 @@ const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
   };
 
   const handleNewChat = () => {
-    onSelectSession(null); // Clear current session to start a new one
+    onSelectSession(null);
   };
 
   const handleSelectSession = (session: ReviseChatSession) => {
