@@ -8,11 +8,11 @@ import { isAxiosError } from "axios";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 interface PdfViewerProps {
-  pdfId: string; // Changed from number to string
+  pdfFileId: string;
   onError?: (error: Error) => void;
 }
 
-export default function PdfViewer({ pdfId, onError }: PdfViewerProps) {
+export default function PdfViewer({ pdfFileId, onError }: PdfViewerProps) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [pdfData, setPdfData] = useState<ArrayBuffer | null>(null);
@@ -21,7 +21,7 @@ export default function PdfViewer({ pdfId, onError }: PdfViewerProps) {
 
   useEffect(() => {
     const loadPdf = async () => {
-      if (!pdfId) return;
+      if (!pdfFileId) return;
 
       setLoading(true);
       setError(null);
@@ -35,10 +35,10 @@ export default function PdfViewer({ pdfId, onError }: PdfViewerProps) {
           throw new Error("User not authenticated. Please log in again.");
         }
 
-        console.log("Fetching PDF content for ID:", pdfId);
+        console.log("Fetching PDF content for ID:", pdfFileId);
         await user.getIdToken(true); // Force refresh
 
-        const response = await axiosInstance.get(`/upload/file/${pdfId}`, { // Changed from /files/${pdfId}/download to /upload/file/${pdfId}
+        const response = await axiosInstance.get(`/upload/file/${pdfFileId}`, {
           responseType: "arraybuffer",
         });
 
@@ -69,7 +69,7 @@ export default function PdfViewer({ pdfId, onError }: PdfViewerProps) {
     };
 
     loadPdf();
-  }, [pdfId, onError]);
+  }, [pdfFileId, onError]);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);

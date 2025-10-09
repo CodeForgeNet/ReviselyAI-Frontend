@@ -9,12 +9,13 @@ interface Message {
 }
 
 interface PdfInfo {
-  id: string; // Changed from number to string
-  filename: string;
-  // path: string; // Removed as no longer relevant
-  created_at: string; // Changed from uploaded_at to created_at
-  user_id: string; // Changed from number to string
-  full_url?: string; // Added
+  id: string;
+  title: string;
+  user_id: string;
+  is_indexed: boolean;
+  created_at: string;
+  file_id: string;
+  full_url?: string;
 }
 
 export default function ChatPage() {
@@ -90,8 +91,8 @@ export default function ChatPage() {
     <div className="flex h-[calc(100vh-120px)]">
       {/* Left Pane: PDF Viewer */}
       <div className="w-1/2 p-4 border-r border-gray-200">
-        {id ? (
-          <PdfViewer pdfId={id} onError={handlePdfError} /> {/* Changed pdfId={Number(id)} to pdfId={id} */}
+        {pdfInfo?.file_id ? (
+          <PdfViewer pdfFileId={pdfInfo.file_id} onError={handlePdfError} />
         ) : (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500">PDF is loading or unavailable...</p>
@@ -103,7 +104,7 @@ export default function ChatPage() {
       <div className="w-1/2 flex flex-col p-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-bold">
-            Chat with {pdfInfo?.filename || "PDF"}
+            Chat with {pdfInfo?.title || "PDF"}
           </h1>
           <button
             onClick={() => navigate("/")}

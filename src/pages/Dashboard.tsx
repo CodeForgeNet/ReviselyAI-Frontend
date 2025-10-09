@@ -133,7 +133,7 @@ export default function Dashboard() {
                 className="flex justify-between items-center border rounded-lg p-4"
               >
                 <div>
-                  <p className="font-medium text-gray-800">{pdf.filename}</p>
+                  <p className="font-medium text-gray-800">{pdf.title}</p>
                   <p className="text-sm text-gray-500">
                     {new Date(pdf.created_at).toLocaleDateString()} {/* Changed uploaded_at to created_at */}
                   </p>
