@@ -16,7 +16,7 @@ This document outlines the setup, execution, and architecture of the Revisely fr
 ### Prerequisites
 
 - Node.js (LTS version recommended)
-- npm or Yarn package manager
+- npm or Yarn package manager.
 
 ### Environment Variables
 
