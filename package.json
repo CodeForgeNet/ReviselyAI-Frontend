@@ -10,10 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-pdf/pdfkit": "^4.0.4",
     "axios": "^1.12.2",
     "firebase": "^12.3.0",
+    "pdfjs-dist": "^3.4.120",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-pdf": "^10.1.0",
     "react-router-dom": "^7.9.3"
   },
   "devDependencies": {
