@@ -34,7 +34,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    console.log("Updated messages state:", messages);
   }, [messages, messagesEndRef]);
 
   const askQuestion = async () => {
@@ -43,7 +42,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     const userQuestion = question.trim();
     setQuestion("");
     setMessages((prev) => [...prev, { role: "user", content: userQuestion }]);
-    console.log("Messages after user question:", messages); // Add this line
     setLoading(true);
 
     try {

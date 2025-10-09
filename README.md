@@ -1,73 +1,112 @@
-# React + TypeScript + Vite
+# Revisely Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This document outlines the setup, execution, and architecture of the Revisely frontend application.
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Setup](#setup)
+- [How to Run](#how-to-run)
+- [Project Architecture and Technologies](#project-architecture-and-technologies)
+- [Features Implemented](#features-implemented)
+- [Missing Features & Future Improvements](#missing-features--future-improvements)
+- [LLM Tools Usage](#llm-tools-usage)
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js (LTS version recommended)
+- npm or Yarn package manager
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Environment Variables
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Create a `.env` file in the `revisely-frontend` directory with the following variables:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+VITE_FIREBASE_API_KEY="your_firebase_api_key"
+VITE_FIREBASE_AUTH_DOMAIN="your_firebase_auth_domain"
+VITE_FIREBASE_PROJECT_ID="your_firebase_project_id"
+VITE_FIREBASE_STORAGE_BUCKET="your_firebase_storage_bucket"
+VITE_FIREBASE_MESSAGING_SENDER_ID="your_firebase_messaging_sender_id"
+VITE_FIREBASE_APP_ID="your_firebase_app_id"
+VITE_FIREBASE_MEASUREMENT_ID="your_firebase_measurement_id"
+VITE_BACKEND_URL="http://localhost:8000" # Or your backend deployment URL
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Installation
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Navigate to the `revisely-frontend` directory:
+   ```bash
+   cd revisely-frontend
+   ```
+2. Install the required Node.js packages:
+   ```bash
+   npm install
+   # or yarn install
+   ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## How to Run
+
+1. Ensure your `.env` file is configured.
+2. Start the Vite development server:
+   ```bash
+   npm run dev
+   # or yarn dev
+   ```
+   The application will typically run on `http://localhost:5173`.
+
+## Project Architecture and Technologies
+
+- **Framework:** React (with TypeScript)
+- **Build Tool:** Vite
+- **Routing:** React Router DOM
+- **State Management:** React Hooks (useState, useEffect, useRef, useCallback)
+- **Styling:** Tailwind CSS
+- **API Communication:** Axios
+- **Authentication:** Firebase Authentication
+- **PDF Viewer:** `react-pdf` (or similar, integrated via `PdfViewer.tsx`)
+- **Markdown Rendering:** `react-markdown`
+
+The project is structured into pages, components, API services, and Firebase configuration.
+
+## Features Implemented
+
+- **User Authentication:** Firebase-based login/logout.
+- **Dashboard:** Displays a list of uploaded PDFs.
+- **PDF Upload:** Allows users to upload PDF files.
+- **PDF-based Chat:**
+  - View PDF content alongside a chat interface.
+  - Ask questions about the displayed PDF.
+  - Receives AI-generated answers based on PDF content (RAG).
+  - Markdown rendering in chat responses.
+- **Revisely Chat (Standalone AI Chat):**
+  - A general conversational AI chat page.
+  - Chat history display and selection.
+  - New chat creation.
+  - Markdown rendering in chat responses.
+- **Quiz Generation & Taking:**
+  - Configure and generate quizzes from PDF content.
+  - Take quizzes (MCQ, SAQ, LAQ).
+- **Progress Tracking:** View quiz attempt history and overall accuracy.
+- **Responsive Navigation:** Navbar with active link highlighting and user dropdown.
+
+## Missing Features & Future Improvements
+
+- **Real-time Chat Updates:** Implement WebSockets for instant message delivery.
+- **Enhanced UI/UX:** Further polish the user interface and experience, including loading indicators, better error displays, and animations.
+- **PDF Chat History Persistence:** Implement saving and loading chat history for PDF-specific conversations.
+- **User Profile Management:** Allow users to view and edit their profile information.
+- **Search Functionality:** Implement search within PDF content or chat history.
+- **Accessibility:** Improve accessibility features for all users.
+- **Comprehensive Testing:** Add unit and integration tests for frontend components and logic.
+- **Deployment Configuration:** Detailed instructions and scripts for deploying the frontend.
+
+## LLM Tools Usage
+
+This frontend application interacts with a backend that utilizes LLM tools (specifically Google Gemini API) for various functionalities. The frontend itself does not directly embed or run LLM models but consumes the results provided by the backend.
+
+- **Purpose of Backend LLM Integration (as consumed by frontend):**
+  - **AI Chat Responses:** Displays answers generated by the Gemini model for both PDF-based and standalone revise chats.
+  - **Quiz Content:** Presents quiz questions and explanations generated by the Gemini model based on PDF content.
+
+**Note:** The frontend is designed to display markdown-formatted responses from the backend, enhancing the readability of AI-generated content.
