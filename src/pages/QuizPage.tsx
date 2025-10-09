@@ -5,11 +5,12 @@ import axios from "../api/axiosInstance";
 interface Question {
   question: string;
   options: string[];
-  correct_answer: number;
+  answer_index: number;
+  explanation: string;
 }
 
 interface QuizState {
-  quiz_id: number;
+  quiz_id: string;
   questions: {
     mcqs?: Question[];
     raw?: string;
@@ -26,7 +27,7 @@ export default function QuizPage() {
   const navigate = useNavigate();
   const { state } = useLocation() as { state: QuizState };
   const { quiz_id, questions } = state || {
-    quiz_id: 0,
+    quiz_id: "",
     questions: { mcqs: [] },
   };
   const [answers, setAnswers] = useState<Record<number, number>>({});
@@ -75,10 +76,7 @@ export default function QuizPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Knowledge Quiz</h1>
         {!submitted && (
-          <button
-            onClick={() => navigate("/")}
-            className="text-gray-500 hover:text-gray-700"
-          >
+          <button onClick={() => navigate("/")} className="btn btn-primary">
             Exit Quiz
           </button>
         )}
@@ -99,11 +97,11 @@ export default function QuizPage() {
                       ? "border-primary-500 bg-primary-50"
                       : "border-gray-200"
                   } ${
-                    submitted && j === q.correct_answer
+                    submitted && j === q.answer_index
                       ? "border-green-500 bg-green-50"
                       : ""
                   } ${
-                    submitted && answers[i] === j && j !== q.correct_answer
+                    submitted && answers[i] === j && j !== q.answer_index
                       ? "border-red-500 bg-red-50"
                       : ""
                   }`}
@@ -122,6 +120,12 @@ export default function QuizPage() {
                   </div>
                 </label>
               ))}
+              {submitted && (
+                <div className="mt-2 p-2 bg-gray-100 rounded-lg">
+                  <p className="text-sm font-semibold">Explanation:</p>
+                  <p className="text-sm">{q.explanation}</p>
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -151,7 +155,9 @@ export default function QuizPage() {
           <div className="text-5xl font-bold text-primary-600 mb-2">
             {result?.score}/{result?.total}
           </div>
-          <p className="text-lg mb-4">Accuracy: {Math.round(result?.pct || 0)}%</p>
+          <p className="text-lg mb-4">
+            Accuracy: {Math.round(result?.pct || 0)}%
+          </p>
 
           <button onClick={() => navigate("/")} className="btn btn-primary">
             Back to Dashboard

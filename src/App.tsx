@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import QuizPage from "./pages/QuizPage";
 import ChatPage from "./pages/ChatPage";
 import Navbar from "./components/Navbar";
+import QuizConfigPage from "./pages/QuizConfigPage";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -44,6 +45,10 @@ export default function App() {
           <Route
             path="/quiz/:id"
             element={user ? <QuizPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/quiz/config/:id"
+            element={user ? <QuizConfigPage /> : <Navigate to="/login" />}
           />
           <Route
             path="/chat/:id"

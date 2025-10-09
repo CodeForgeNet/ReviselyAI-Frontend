@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import axiosInstance from "../api/axiosInstance";
 import { getAuth } from "firebase/auth";
@@ -11,7 +11,7 @@ interface PdfViewerProps {
   onError?: (error: Error) => void;
 }
 
-export default function PdfViewer({ pdfFileId, onError }: PdfViewerProps) {
+const PdfViewer = React.memo(({ pdfFileId, onError }: PdfViewerProps) => {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [pdfData, setPdfData] = useState<ArrayBuffer | null>(null);
@@ -132,7 +132,6 @@ export default function PdfViewer({ pdfFileId, onError }: PdfViewerProps) {
           >
             <Page 
               pageNumber={pageNumber} 
-              width={600}
               className="pdf-page"
               renderTextLayer={false}
               renderAnnotationLayer={false}
@@ -164,4 +163,6 @@ export default function PdfViewer({ pdfFileId, onError }: PdfViewerProps) {
       )}
     </div>
   );
-}
+});
+
+export default PdfViewer;

@@ -61,6 +61,7 @@ export default function ChatPage() {
     const userQuestion = question.trim();
     setQuestion("");
     setMessages((prev) => [...prev, { role: "user", content: userQuestion }]);
+    console.log("Messages after user question:", messages); // Add this line
     setLoading(true);
 
     try {
@@ -87,15 +88,15 @@ export default function ChatPage() {
     }
   };
 
-  const handlePdfError = (error: Error) => {
+  const handlePdfError = useCallback((error: Error) => {
     console.error("PDF Viewer Error:", error);
     // Optionally display an error message to the user
-  };
+  }, []);
 
   return (
-    <div className="flex h-[calc(100vh-120px)]">
+    <div className="flex h-[88vh] overflow-hidden">
       {/* Left Pane: PDF Viewer */}
-      <div className="w-1/2 p-4 border-r border-gray-200">
+      <div className="w-1/2 p-4 border-r border-gray-200 overflow-y-auto">
         {pdfInfo?.file_id ? (
           <PdfViewer pdfFileId={pdfInfo.file_id} onError={handlePdfError} />
         ) : (
@@ -111,12 +112,6 @@ export default function ChatPage() {
           <h1 className="text-xl font-bold">
             Chat with {pdfInfo?.title || "PDF"}
           </h1>
-          <button
-            onClick={() => navigate("/")}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            Back to Dashboard
-          </button>
         </div>
 
         <div className="flex-1 bg-white rounded-lg shadow-sm overflow-y-auto mb-4 p-4">

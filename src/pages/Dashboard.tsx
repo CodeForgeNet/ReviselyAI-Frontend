@@ -62,14 +62,8 @@ export default function Dashboard() {
     }
   };
 
-  const generateQuiz = async (id: string) => { // Changed id from number to string
-    try {
-      const res = await axios.post(`/quiz/generate?pdf_id=${id}`);
-      navigate(`/quiz/${res.data.quiz_id}`, { state: res.data });
-    } catch (error) {
-      console.error("Error generating quiz:", error);
-      alert("Failed to generate quiz");
-    }
+  const generateQuiz = (id: string) => { // Changed id from number to string
+    navigate(`/quiz/config/${id}`);
   };
 
   const openChat = (id: string) => { // Changed id from number to string
