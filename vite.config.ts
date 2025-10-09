@@ -1,15 +1,31 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   css: {
-    postcss: './postcss.config.js',
+    postcss: "./postcss.config.js",
   },
   optimizeDeps: {
-    include: [
-      'react-pdf',
-    ],
+    include: ["react-pdf"],
   },
-})
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          pdfjs: ["pdfjs-dist"],
+        },
+      },
+    },
+  },
+  server: {
+    fs: {
+      allow: [".."],
+      strict: false,
+    },
+  },
+  resolve: {
+    
+  },
+});

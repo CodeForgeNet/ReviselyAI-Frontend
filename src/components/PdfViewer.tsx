@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import axiosInstance from "../api/axiosInstance";
 import { getAuth } from "firebase/auth";
-import { isAxiosError } from "axios";
 
-// Configure pdf.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+// Set worker path to public directory
+pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
 
 interface PdfViewerProps {
   pdfFileId: string;
@@ -20,60 +19,76 @@ export default function PdfViewer({ pdfFileId, onError }: PdfViewerProps) {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const loadPdf = async () => {
-      if (!pdfFileId) return;
+    console.log("PdfViewer mounted/updated with pdfFileId:", pdfFileId);
+  }, [pdfFileId]);
 
-      setLoading(true);
-      setError(null);
-      setPdfData(null);
+  const loadPdf = useCallback(async () => {
+    if (!pdfFileId) {
+      console.log("No pdfFileId provided");
+      return;
+    }
 
-      try {
-        const auth = getAuth();
-        const user = auth.currentUser;
+    console.log("Starting PDF load process for ID:", pdfFileId);
+    setLoading(true);
+    setError(null);
+    setPdfData(null);
 
-        if (!user) {
-          throw new Error("User not authenticated. Please log in again.");
-        }
-
-        console.log("Fetching PDF content for ID:", pdfFileId);
-        await user.getIdToken(true); // Force refresh
-
-        const response = await axiosInstance.get(`/upload/file/${pdfFileId}`, {
-          responseType: "arraybuffer",
-        });
-
-        setPdfData(response.data);
-        console.log("PDF loaded successfully");
-      } catch (err) {
-        console.error("Error loading PDF:", err);
-        let errorToSet: Error;
-        if (isAxiosError(err)) {
-          console.error("Error details:", {
-            message: err.message,
-            response: err.response?.data,
-            status: err.response?.status,
-          });
-          errorToSet = new Error(
-            `Failed to load PDF: ${err.response?.statusText || err.message}`
-          );
-        } else if (err instanceof Error) {
-          errorToSet = err;
-        } else {
-          errorToSet = new Error("An unknown error occurred while loading the PDF.");
-        }
-        setError(errorToSet);
-        if (onError) onError(errorToSet);
-      } finally {
-        setLoading(false);
+    try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      
+      if (!user) {
+        throw new Error("User not authenticated");
       }
-    };
 
-    loadPdf();
+      console.log("Current user:", user.uid);
+      console.log("Fetching PDF content for ID:", pdfFileId);
+
+      const token = await user.getIdToken(true);
+      console.log("Got fresh token:", token.substring(0, 10) + "...");
+
+      console.log("Making request to:", `/upload/file/${pdfFileId}`);
+      const response = await axiosInstance.get(`/upload/file/${pdfFileId}`, {
+        responseType: "arraybuffer",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/pdf",
+        },
+      });
+
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+      console.log("Response data type:", typeof response.data);
+      console.log("Response data size:", response.data.byteLength, "bytes");
+
+      if (response.status !== 200) {
+        throw new Error(`Failed to fetch PDF: ${response.status}`);
+      }
+
+      if (!response.data) {
+        throw new Error("Empty response received");
+      }
+
+      console.log("Setting PDF data...");
+      setPdfData(response.data);
+      console.log("PDF data set successfully");
+      setLoading(false);
+    } catch (err) {
+      console.error("Error loading PDF:", err);
+      setError(err instanceof Error ? err : new Error(String(err)));
+      setLoading(false);
+      if (onError) onError(err instanceof Error ? err : new Error(String(err)));
+    } finally {
+      setLoading(false);
+    }
   }, [pdfFileId, onError]);
+
+  useEffect(() => {
+    loadPdf();
+  }, [loadPdf]);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
-    setError(null);
     setPageNumber(1);
   }
 
@@ -85,68 +100,67 @@ export default function PdfViewer({ pdfFileId, onError }: PdfViewerProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">Loading PDF...</div>
+      <div className="flex items-center justify-center h-full">
+        Loading PDF...
+      </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center p-4 text-red-500">
-        <p className="font-semibold">Failed to load PDF file</p>
-        <p className="text-sm mt-2">{error.message}</p>
-      </div>
-    );
-  }
-
-  if (!pdfData) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        No PDF data to display.
+      <div className="flex flex-col items-center justify-center h-full text-red-500">
+        <p>Error loading PDF: {error.message}</p>
+        <button 
+          onClick={loadPdf} 
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Retry
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="pdf-container flex flex-col items-center w-full">
-      <Document
-        file={pdfData}
-        onLoadSuccess={onDocumentLoadSuccess}
-        onLoadError={onDocumentLoadError}
-        className="pdf-document max-h-full overflow-y-auto w-full"
-      >
-        {numPages && (
-          <Page
-            pageNumber={pageNumber}
-            width={Math.min(window.innerWidth - 40, 800)}
-            className="shadow-md mx-auto"
-          />
-        )}
-      </Document>
-
-      {numPages && (
-        <div className="pdf-controls flex items-center justify-between w-full max-w-md p-4">
-          <button
-            onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-            disabled={pageNumber <= 1}
-            className="btn btn-secondary"
+    <div className="pdf-container">
+      {pdfData && (
+        <>
+          <Document
+            file={pdfData}
+            onLoadSuccess={onDocumentLoadSuccess}
+            onLoadError={onDocumentLoadError}
+            className="pdf-document"
           >
-            Previous
-          </button>
-
-          <span>
-            Page {pageNumber} of {numPages || "--"}
-          </span>
-
-          <button
-            onClick={() =>
-              setPageNumber((prev) => Math.min(prev + 1, numPages || 1))
-            }
-            disabled={pageNumber >= (numPages || 1)}
-            className="btn btn-secondary"
-          >
-            Next
-          </button>
-        </div>
+            <Page 
+              pageNumber={pageNumber} 
+              width={600}
+              className="pdf-page"
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+            />
+          </Document>
+          
+          {numPages && (
+            <div className="pdf-controls mt-4 flex items-center justify-center space-x-4">
+              <button
+                disabled={pageNumber <= 1}
+                onClick={() => setPageNumber(pageNumber - 1)}
+                className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
+              >
+                Previous
+              </button>
+              <span>
+                Page {pageNumber} of {numPages}
+              </span>
+              <button
+                disabled={pageNumber >= numPages!}
+                onClick={() => setPageNumber(pageNumber + 1)}
+                className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

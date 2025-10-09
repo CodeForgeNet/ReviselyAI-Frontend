@@ -28,9 +28,14 @@ export default function ChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const fetchPdfInfo = useCallback(async () => {
-    if (!id) return; // Ensure id is available
+    if (!id) {
+      console.log("No ID available");
+      return;
+    }
     try {
-      const res = await axios.get(`/upload/${id}`); // Changed from /files/${id} to /upload/${id}
+      console.log("Fetching PDF info for ID:", id);
+      const res = await axios.get(`/upload/${id}`);
+      console.log("PDF info received:", res.data);
       setPdfInfo(res.data);
     } catch (error) {
       console.error("Error fetching PDF info:", error);
