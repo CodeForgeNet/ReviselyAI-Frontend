@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "postinstall": "ln -s ../node_modules/pdfjs-dist/build/pdf.worker.min.js public/pdf.worker.min.js"
+    "postinstall": "ln -sf ../node_modules/pdfjs-dist/build/pdf.worker.min.js public/pdf.worker.min.js"
   },
   "dependencies": {
     "@react-pdf/pdfkit": "^4.0.4",
