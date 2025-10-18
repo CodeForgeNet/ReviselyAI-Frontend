@@ -26,6 +26,7 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
   currentSession,
   onSessionUpdate,
 }) => {
+  console.log("ReviseChatInterface rendered");
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ReviseChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
@@ -44,6 +45,7 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
   }, [messages]);
 
   const askQuestion = async () => {
+    console.log("Send button clicked or Enter pressed"); // Added log
     if (!question.trim()) return;
 
     const userQuestion = question.trim();
@@ -58,11 +60,21 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
     ]);
     setLoading(true);
 
+    console.log(
+      "ReviseChatInterface: Sending question with session_id:",
+      currentSession?.id
+    );
+
     try {
       const res = await axios.post("/revisechat/ask", {
         question: userQuestion,
         session_id: currentSession?.id || null,
       });
+
+      console.log(
+        "ReviseChatInterface: Received response with session_id:",
+        res.data.session_id
+      );
 
       const newAiMessage: ReviseChatMessage = {
         role: "assistant",
@@ -73,6 +85,10 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
       setMessages((prev) => [...prev, newAiMessage]);
 
       if (res.data.session_id && !currentSession) {
+        console.log(
+          "ReviseChatInterface: New session created, passing ID to onSessionUpdate:",
+          res.data.session_id
+        );
         onSessionUpdate({
           id: res.data.session_id,
           user_id: "",
@@ -92,6 +108,10 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
           updated_at: new Date().toISOString(),
         });
       } else if (currentSession) {
+        console.log(
+          "ReviseChatInterface: Updating existing session, passing ID to onSessionUpdate:",
+          currentSession.id
+        );
         onSessionUpdate({
           ...currentSession,
           messages: [
