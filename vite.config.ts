@@ -9,6 +9,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ["react-pdf"],
+    exclude: ["pdfjs-dist"],
   },
   build: {
     rollupOptions: {
