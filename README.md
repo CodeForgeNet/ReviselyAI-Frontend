@@ -2,6 +2,11 @@
 
 This document outlines the setup, execution, and architecture of the Revisely frontend application.
 
+## Live Demo :globe_with_meridians:
+<a href="https://revisely-ai.vercel.app/">
+    <img height="60" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/chrome/chrome-original.svg" />
+</a>
+
 ## Table of Contents
 
 - [Setup](#setup)
