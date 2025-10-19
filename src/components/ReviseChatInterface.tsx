@@ -9,7 +9,7 @@ interface ReviseChatMessage {
 }
 
 interface ReviseChatSession {
-  id: string;
+  _id: string;
   user_id: string;
   title: string;
   messages: ReviseChatMessage[];
@@ -26,7 +26,6 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
   currentSession,
   onSessionUpdate,
 }) => {
-  console.log("ReviseChatInterface rendered");
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ReviseChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
@@ -62,13 +61,13 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
 
     console.log(
       "ReviseChatInterface: Sending question with session_id:",
-      currentSession?.id
+      currentSession?._id
     );
 
     try {
-      const res = await axios.post("/revisechat/ask", {
+      const res = await axios.post("/revise-chat/ask", {
         question: userQuestion,
-        session_id: currentSession?.id || null,
+        session_id: currentSession?._id || null,
       });
 
       console.log(
@@ -90,7 +89,7 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
           res.data.session_id
         );
         onSessionUpdate({
-          id: res.data.session_id,
+          _id: res.data.session_id,
           user_id: "",
           title:
             userQuestion.substring(0, 50) +
@@ -110,7 +109,7 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
       } else if (currentSession) {
         console.log(
           "ReviseChatInterface: Updating existing session, passing ID to onSessionUpdate:",
-          currentSession.id
+          currentSession._id
         );
         onSessionUpdate({
           ...currentSession,

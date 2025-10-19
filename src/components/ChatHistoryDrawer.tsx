@@ -8,7 +8,7 @@ interface ReviseChatMessage {
 }
 
 interface ReviseChatSession {
-  id: string;
+  _id: string;
   user_id: string;
   title: string;
   messages: ReviseChatMessage[];
@@ -29,8 +29,13 @@ const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
 }) => {
   const [sessions, setSessions] = useState<ReviseChatSession[]>([]);
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
-  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
-  const [selectedSessionForDeletion, setSelectedSessionForDeletion] = useState<string | null>(null);
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [selectedSessionForDeletion, setSelectedSessionForDeletion] = useState<
+    string | null
+  >(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,7 +44,10 @@ const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (contextMenuRef.current && !contextMenuRef.current.contains(event.target as Node)) {
+      if (
+        contextMenuRef.current &&
+        !contextMenuRef.current.contains(event.target as Node)
+      ) {
         setContextMenuVisible(false);
       }
     };
@@ -56,7 +64,6 @@ const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
         "/revise-chat/history"
       );
       setSessions(response.data);
-      console.log("ChatHistoryDrawer: Fetched history:", response.data); // Added log
     } catch (error) {
       console.error("Error fetching chat history:", error);
     }
@@ -80,12 +87,9 @@ const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
 
   const handleDeleteSession = async (event: React.MouseEvent) => {
     event.stopPropagation(); // Stop event propagation
-    console.log("handleDeleteSession called"); // Added log
     if (selectedSessionForDeletion) {
-      console.log("Attempting to delete session with ID:", selectedSessionForDeletion);
       try {
         await axios.delete(`/revise-chat/${selectedSessionForDeletion}`);
-        console.log("Session deleted successfully.");
         fetchChatHistory(); // Refresh history after deletion
         if (currentSessionId === selectedSessionForDeletion) {
           onSelectSession(null); // Clear current session if deleted
@@ -114,14 +118,13 @@ const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
         ) : (
           sessions.map((session) => (
             <li
-              key={session.id}
-              onContextMenu={(e) => handleContextMenu(e, session.id)}
+              key={session._id}
+              onContextMenu={(e) => handleContextMenu(e, session._id)}
             >
               <button
-                key={session.id}
                 onClick={() => handleSelectSession(session)}
                 className={`w-full text-left p-2 rounded-lg ${
-                  currentSessionId === session.id
+                  currentSessionId === session._id
                     ? "bg-blue-200 text-blue-800"
                     : "hover:bg-gray-200"
                 }`}

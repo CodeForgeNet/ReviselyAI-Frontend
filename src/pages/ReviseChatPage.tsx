@@ -9,7 +9,7 @@ interface ReviseChatMessage {
 }
 
 interface ReviseChatSession {
-  id: string;
+  _id: string;
   user_id: string;
   title: string;
   messages: ReviseChatMessage[];
@@ -23,30 +23,28 @@ const ReviseChatPage: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0); // Add refreshTrigger state
 
   const handleSelectSession = (session: ReviseChatSession | null) => {
-    console.log("ReviseChatPage: handleSelectSession - selected session ID:", session?.id);
-    if (session === null) {
-      console.log("ReviseChatPage: New chat selected (session is null)");
-    }
     setCurrentSession(session);
-    console.log("ReviseChatPage: currentSession after select:", session?.id);
   };
 
   const handleSessionUpdate = (session: ReviseChatSession) => {
-    console.log("ReviseChatPage: handleSessionUpdate - updated session ID:", session.id);
+    console.log(
+      "ReviseChatPage: handleSessionUpdate - updated session ID:",
+      session._id
+    );
     setCurrentSession(session);
     setRefreshTrigger((prev) => {
       const newTrigger = prev + 1;
       console.log("ReviseChatPage: refreshTrigger incremented to:", newTrigger);
       return newTrigger;
     });
-    console.log("ReviseChatPage: currentSession after update:", session.id);
+    console.log("ReviseChatPage: currentSession after update:", session._id);
   };
 
   return (
     <div className="flex h-[88vh] overflow-hidden">
       <ChatHistoryDrawer
         onSelectSession={handleSelectSession}
-        currentSessionId={currentSession?.id || null}
+        currentSessionId={currentSession?._id || null}
         refreshTrigger={refreshTrigger} // Pass refreshTrigger
       />
 
