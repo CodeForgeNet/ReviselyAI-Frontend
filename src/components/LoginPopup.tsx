@@ -7,7 +7,11 @@ import {
 } from "firebase/auth";
 import axios from "../api/axiosInstance";
 
-export default function Login() {
+interface LoginPopupProps {
+  onClose: () => void;
+}
+
+export default function LoginPopup({ onClose }: LoginPopupProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -29,6 +33,7 @@ export default function Login() {
 
       const token = await userCred.user.getIdToken();
       await axios.post("/auth/verify", { token });
+      onClose();
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -46,6 +51,7 @@ export default function Login() {
       const result = await signInWithPopup(auth, googleProvider);
       const token = await result.user.getIdToken();
       await axios.post("/auth/verify", { token });
+      onClose();
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -58,8 +64,27 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center">
-      <div className="bg-white p-8 shadow-lg rounded-xl w-96 space-y-4">
+    <div className="fixed inset-0 bg-gradient-to-br from-blue-300 to-purple-300 flex items-center justify-center z-50">
+      <div className="bg-white p-8 shadow-xl rounded-xl w-96 space-y-4 relative border-2 border-primary-700">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
         <h2 className="text-2xl font-bold text-center text-primary-600">
           {isLogin ? "Login to Revisely" : "Create Account"}
         </h2>
