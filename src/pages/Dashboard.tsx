@@ -83,43 +83,51 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 my-8">
-      <div className="frosted-card p-6 rounded-lg shadow-lg text-black">
-        <h1 className="text-2xl font-bold mb-6">Welcome to Revisely</h1>
-        <p className="text-black mb-4">
+    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 md:space-y-8 px-4 sm:px-6 py-4 sm:py-6 md:py-8">
+      <div className="frosted-card p-4 sm:p-6 rounded-lg shadow-lg text-black">
+        <h1 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-6">
+          Welcome to Revisely
+        </h1>
+        <p className="text-black mb-4 text-sm sm:text-base">
           Upload your study materials and let AI help you learn more
           effectively.
         </p>
 
-        <div className="border-2 border-dashed border-gray-500 rounded-lg p-6 text-center">
-          <h3 className="font-semibold mb-3">Upload PDF</h3>
+        <div className="border-2 border-dashed border-gray-500 rounded-lg p-4 sm:p-6 text-center">
+          <h3 className="font-semibold mb-3 text-sm sm:text-base">
+            Upload PDF
+          </h3>
           <input
             type="file"
             accept="application/pdf"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
-            className="mb-3 border border-gray-600 rounded-md px-3 py-2 w-full"
+            className="mb-3 border border-gray-600 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 w-full text-sm sm:text-base"
             ref={fileInputRef}
           />
           <button
             onClick={uploadPDF}
             disabled={!file || uploading}
-            className="btn btn-primary"
+            className="btn btn-primary text-sm sm:text-base w-full sm:w-auto"
           >
             {uploading ? "Uploading..." : "Upload"}
           </button>
         </div>
       </div>
 
-      <div className="frosted-card p-6 rounded-lg shadow-lg text-black">
-        <h2 className="text-xl font-bold mb-4">Your Study Materials</h2>
+      <div className="frosted-card p-4 sm:p-6 rounded-lg shadow-lg text-black">
+        <h2 className="text-lg sm:text-xl font-bold mb-4">
+          Your Study Materials
+        </h2>
 
         {loading ? (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-600 mx-auto"></div>
-            <p className="mt-2 text-black">Loading your materials...</p>
+          <div className="text-center py-6 sm:py-8">
+            <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-t-2 border-b-2 border-primary-600 mx-auto"></div>
+            <p className="mt-2 text-black text-sm sm:text-base">
+              Loading your materials...
+            </p>
           </div>
         ) : pdfs.length === 0 ? (
-          <p className="text-center py-8 text-black">
+          <p className="text-center py-6 sm:py-8 text-black text-sm sm:text-base">
             No PDFs uploaded yet. Upload your first document to get started!
           </p>
         ) : (
@@ -127,30 +135,32 @@ export default function Dashboard() {
             {pdfs.map((pdf) => (
               <div
                 key={pdf.id}
-                className="flex justify-between items-center border rounded-lg p-4"
+                className="flex flex-col sm:flex-row justify-between items-start sm:items-center border rounded-lg p-3 sm:p-4 gap-3 sm:gap-4"
               >
-                <div>
-                  <p className="font-medium text-gray-800">{pdf.title}</p>
-                  <p className="text-sm text-gray-500">
+                <div className="w-full sm:w-auto">
+                  <p className="font-medium text-gray-800 text-sm sm:text-base">
+                    {pdf.title}
+                  </p>
+                  <p className="text-xs sm:text-sm text-gray-500">
                     {new Date(pdf.created_at).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                   <button
                     onClick={() => openChat(pdf.id)}
-                    className="btn btn-primary px-3 py-1 rounded hover:bg-primary-100"
+                    className="btn btn-primary px-2 sm:px-3 py-1 rounded hover:bg-primary-100 text-xs sm:text-sm flex-1 sm:flex-none"
                   >
                     Ask Questions
                   </button>
                   <button
                     onClick={() => generateQuiz(pdf.id)}
-                    className="btn btn-primary px-3 py-1 rounded hover:bg-blue-100"
+                    className="btn btn-primary px-2 sm:px-3 py-1 rounded hover:bg-blue-100 text-xs sm:text-sm flex-1 sm:flex-none"
                   >
                     Generate Quiz
                   </button>
                   <button
                     onClick={() => handleDelete(pdf.id)}
-                    className="btn btn-danger px-3 py-1 rounded hover:bg-red-100"
+                    className="btn btn-danger px-2 sm:px-3 py-1 rounded hover:bg-red-100 text-xs sm:text-sm flex-1 sm:flex-none"
                   >
                     Delete
                   </button>

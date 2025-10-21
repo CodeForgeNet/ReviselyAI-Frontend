@@ -104,26 +104,31 @@ const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
   };
 
   return (
-    <div className="w-1/4 bg-gray-100 p-4 border-r border-gray-200 flex flex-col">
+    <div className="w-full h-full bg-gray-100 p-3 sm:p-4 border-r border-gray-200 flex flex-col">
       <button
         onClick={handleNewChat}
-        className="mb-4 w-full px-4 py-2 bg-blue-500 text-white rounded-lg"
+        className="mb-3 sm:mb-4 w-full px-3 sm:px-4 py-2 bg-blue-500 text-white rounded-lg text-sm sm:text-base hover:bg-blue-600 transition-colors"
       >
         New Chat
       </button>
-      <h2 className="text-xl font-bold mb-4">Chat History</h2>
+      <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">
+        Chat History
+      </h2>
       <ul className="space-y-2 flex-1 overflow-y-auto">
         {sessions.length === 0 ? (
-          <p className="text-gray-500">No chat history yet.</p>
+          <p className="text-gray-500 text-sm sm:text-base">
+            No chat history yet.
+          </p>
         ) : (
           sessions.map((session) => (
             <li
               key={session._id}
               onContextMenu={(e) => handleContextMenu(e, session._id)}
+              className="min-w-0" // Prevent text overflow
             >
               <button
                 onClick={() => handleSelectSession(session)}
-                className={`w-full text-left p-2 rounded-lg ${
+                className={`w-full text-left p-2 rounded-lg text-sm sm:text-base truncate ${
                   currentSessionId === session._id
                     ? "bg-blue-200 text-blue-800"
                     : "hover:bg-gray-200"
