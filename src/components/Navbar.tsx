@@ -1,36 +1,47 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { signOut, onAuthStateChanged, type User } from "firebase/auth";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/config";
 
 export default function Navbar() {
-  const [user, setUser] = useState<User | null>(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const desktopDropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setUser(u);
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setUserEmail(user?.email || null);
     });
     return () => unsub();
   }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        desktopDropdownRef.current &&
+        !desktopDropdownRef.current.contains(target)
       ) {
-        setDropdownOpen(false);
+        setDesktopDropdownOpen(false);
+      }
+      if (
+        mobileDropdownRef.current &&
+        !mobileDropdownRef.current.contains(target)
+      ) {
+        setMobileDropdownOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [dropdownRef]);
+  }, []);
 
   const getInitials = (email: string | null | undefined) => {
     if (!email) return "?";
@@ -68,19 +79,24 @@ export default function Navbar() {
             <Link to="/revisechat" className={getLinkClass("/revisechat")}>
               ReviselyChat
             </Link>
-            <div className="relative" ref={dropdownRef}>
+            <div className="relative" ref={desktopDropdownRef}>
               <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={() => setDesktopDropdownOpen(!desktopDropdownOpen)}
                 className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-700 flex items-center justify-center font-bold text-white text-sm sm:text-base hover:bg-blue-800 transition-colors"
               >
-                {getInitials(user?.email)}
+                {getInitials(userEmail)}
               </button>
-              {dropdownOpen && (
+              {desktopDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-50">
                   <button
-                    onClick={() => {
-                      signOut(auth);
-                      setDropdownOpen(false);
+                    onClick={async () => {
+                      try {
+                        await signOut(auth);
+                        setDesktopDropdownOpen(false);
+                        navigate("/");
+                      } catch (error) {
+                        console.error("Logout failed:", error);
+                      }
                     }}
                     className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                   >
@@ -93,19 +109,24 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center gap-2">
-            <div className="relative" ref={dropdownRef}>
+            <div className="relative" ref={mobileDropdownRef}>
               <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
                 className="w-9 h-9 rounded-full bg-blue-700 flex items-center justify-center font-bold text-white text-sm hover:bg-blue-800 transition-colors mr-2"
               >
-                {getInitials(user?.email)}
+                {getInitials(userEmail)}
               </button>
-              {dropdownOpen && (
+              {mobileDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-50">
                   <button
-                    onClick={() => {
-                      signOut(auth);
-                      setDropdownOpen(false);
+                    onClick={async () => {
+                      try {
+                        await signOut(auth);
+                        setMobileDropdownOpen(false);
+                        navigate("/");
+                      } catch (error) {
+                        console.error("Logout failed:", error);
+                      }
                     }}
                     className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                   >

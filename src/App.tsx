@@ -10,6 +10,7 @@ import QuizConfigPage from "./pages/QuizConfigPage";
 import ProgressPage from "./pages/ProgressPage";
 import ReviseChatPage from "./pages/ReviseChatPage";
 import LandingPage from "./pages/LandingPage";
+import Footer from "./components/Footer";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -32,7 +33,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-300 to-purple-300">
-      {user && <Navbar />}
+      {user && <Navbar user={user} />}
 
       <div className="container mx-auto px-4 py-4">
         <Routes>
@@ -62,6 +63,7 @@ export default function App() {
           />
         </Routes>
       </div>
+      <Footer />
     </div>
   );
 }
