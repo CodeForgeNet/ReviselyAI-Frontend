@@ -69,18 +69,20 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   };
 
   return (
-    <div className="w-1/2 flex flex-col p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">
+    <div className="w-full lg:w-1/2 flex flex-col p-2 sm:p-4 h-[50vh] lg:h-full">
+      <div className="flex justify-between items-center mb-2 sm:mb-4">
+        <h1 className="text-lg sm:text-xl font-bold truncate max-w-[250px] sm:max-w-full">
           Chat with {pdfInfo?.title || "PDF"}
         </h1>
       </div>
 
-      <div className="flex-1 bg-white rounded-lg shadow-sm overflow-y-auto mb-4 p-4">
+      <div className="flex-1 bg-white rounded-lg shadow-sm overflow-y-auto mb-2 sm:mb-4 p-2 sm:p-4">
         {messages.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            <p>Ask a question about this document to get started!</p>
-            <p className="text-sm mt-2">
+          <div className="text-center py-6 sm:py-12 text-gray-500">
+            <p className="text-sm sm:text-base">
+              Ask a question about this document to get started!
+            </p>
+            <p className="text-xs sm:text-sm mt-2">
               For example: "What are the main topics covered?" or "Explain the
               concept of X"
             </p>
@@ -95,28 +97,29 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 }`}
               >
                 <div
-                  className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                  className={`max-w-[85%] sm:max-w-[80%] rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base ${
                     msg.role === "user"
                       ? "bg-blue-700 text-white"
                       : "bg-gray-100 text-gray-800"
                   }`}
                 >
-                  <ReactMarkdown>{msg.content}</ReactMarkdown>{" "}
-                  {/* Use ReactMarkdown */}
+                  <div className="break-words">
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  </div>
                 </div>
               </div>
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 text-gray-800 rounded-lg px-4 py-2">
+                <div className="bg-gray-100 text-gray-800 rounded-lg px-3 sm:px-4 py-1.5 sm:py-2">
                   <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-gray-400 rounded-full animate-bounce"></div>
                     <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-gray-400 rounded-full animate-bounce"
                       style={{ animationDelay: "0.2s" }}
                     ></div>
                     <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-gray-400 rounded-full animate-bounce"
                       style={{ animationDelay: "0.4s" }}
                     ></div>
                   </div>
@@ -128,21 +131,21 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         )}
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-3 flex">
+      <div className="bg-white rounded-lg shadow-sm p-2 sm:p-3 flex items-center gap-2">
         <input
           type="text"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && askQuestion()}
           placeholder="Ask a question about this document..."
-          className="flex-1 border-none focus:outline-none"
+          className="flex-1 border-none focus:outline-none text-sm sm:text-base"
           disabled={loading}
         />
         <button
           onClick={askQuestion}
           disabled={!question.trim() || loading}
-          className={`ml-2 btn btn-primary ${
-            !question.trim() && "opacity-50 cursor-not-allowed"
+          className={`px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-blue-700 text-white rounded-md hover:bg-blue-800 transition-colors ${
+            (!question.trim() || loading) && "opacity-50 cursor-not-allowed"
           }`}
         >
           Send

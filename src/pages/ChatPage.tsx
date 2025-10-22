@@ -42,13 +42,15 @@ export default function ChatPage() {
   }, []);
 
   return (
-    <div className="flex h-[86vh] overflow-hidden">
-      <div className="w-1/2 p-4 border-r border-gray-200 overflow-y-auto">
+    <div className="flex flex-col lg:flex-row h-[86vh] overflow-hidden">
+      <div className="w-full lg:w-1/2 h-[50vh] lg:h-full p-2 sm:p-4 border-b lg:border-b-0 lg:border-r border-gray-200 overflow-y-auto">
         {pdfInfo?.file_id ? (
           <PdfViewer pdfFileId={pdfInfo.file_id} onError={handlePdfError} />
         ) : (
           <div className="flex items-center justify-center h-full">
-            <p className="text-gray-500">PDF is loading or unavailable...</p>
+            <p className="text-gray-500 text-sm sm:text-base">
+              PDF is loading or unavailable...
+            </p>
           </div>
         )}
       </div>

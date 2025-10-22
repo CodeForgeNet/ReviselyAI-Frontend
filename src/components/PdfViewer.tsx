@@ -102,18 +102,20 @@ const PdfViewer = React.memo(({ pdfFileId, onError }: PdfViewerProps) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        Loading PDF...
+        <span className="text-sm sm:text-base">Loading PDF...</span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-red-500">
-        <p>Error loading PDF: {error.message}</p>
+      <div className="flex flex-col items-center justify-center h-full text-red-500 p-4 text-center">
+        <p className="text-sm sm:text-base">
+          Error loading PDF: {error.message}
+        </p>
         <button
           onClick={loadPdf}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+          className="mt-3 sm:mt-4 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-blue-500 text-white rounded"
         >
           Retry
         </button>
@@ -140,21 +142,21 @@ const PdfViewer = React.memo(({ pdfFileId, onError }: PdfViewerProps) => {
           </Document>
 
           {numPages && (
-            <div className="pdf-controls mt-4 flex items-center justify-center space-x-4">
+            <div className="pdf-controls mt-2 sm:mt-4 flex items-center justify-center space-x-2 sm:space-x-4">
               <button
                 disabled={pageNumber <= 1}
                 onClick={() => setPageNumber(pageNumber - 1)}
-                className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
+                className="px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base bg-blue-500 text-white rounded disabled:bg-gray-400"
               >
                 Previous
               </button>
-              <span>
+              <span className="text-sm sm:text-base">
                 Page {pageNumber} of {numPages}
               </span>
               <button
                 disabled={pageNumber >= numPages!}
                 onClick={() => setPageNumber(pageNumber + 1)}
-                className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
+                className="px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base bg-blue-500 text-white rounded disabled:bg-gray-400"
               >
                 Next
               </button>
