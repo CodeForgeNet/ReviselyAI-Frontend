@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { signOut, onAuthStateChanged } from "firebase/auth";
+import { signOut, type User } from "firebase/auth";
 import { auth } from "../firebase/config";
 
-export default function Navbar() {
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+interface NavbarProps {
+  user: User | null;
+}
+
+export default function Navbar({ user }: NavbarProps) {
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -12,13 +15,6 @@ export default function Navbar() {
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      setUserEmail(user?.email || null);
-    });
-    return () => unsub();
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -43,9 +39,13 @@ export default function Navbar() {
     };
   }, []);
 
-  const getInitials = (email: string | null | undefined) => {
-    if (!email) return "?";
-    return email[0].toUpperCase();
+  const getInitials = (displayName: string | null | undefined) => {
+    if (displayName) {
+      return displayName[0].toUpperCase();
+    } else if (user?.email) {
+      return user.email[0].toUpperCase();
+    }
+    return "?";
   };
 
   const getLinkClass = (path: string) => {
@@ -84,10 +84,21 @@ export default function Navbar() {
                 onClick={() => setDesktopDropdownOpen(!desktopDropdownOpen)}
                 className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-700 flex items-center justify-center font-bold text-white text-sm sm:text-base hover:bg-blue-800 transition-colors"
               >
-                {getInitials(userEmail)}
+                {user?.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt="User Avatar"
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  getInitials(user?.displayName || user?.email)
+                )}
               </button>
               {desktopDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-50">
+                  <div className="px-4 py-2 text-sm text-gray-700">
+                    {user?.displayName || user?.email}
+                  </div>
                   <button
                     onClick={async () => {
                       try {
@@ -114,10 +125,21 @@ export default function Navbar() {
                 onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
                 className="w-9 h-9 rounded-full bg-blue-700 flex items-center justify-center font-bold text-white text-sm hover:bg-blue-800 transition-colors mr-2"
               >
-                {getInitials(userEmail)}
+                {user?.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt="User Avatar"
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  getInitials(user?.displayName || user?.email)
+                )}
               </button>
               {mobileDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-50">
+                  <div className="px-4 py-2 text-sm text-gray-700">
+                    {user?.displayName || user?.email}
+                  </div>
                   <button
                     onClick={async () => {
                       try {
