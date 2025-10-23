@@ -70,6 +70,10 @@ export default function Dashboard() {
     navigate(`/chat/${id}`);
   };
 
+  const openVideos = (id: string) => {
+    navigate(`/videos/${id}`);
+  };
+
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this PDF?")) {
       try {
@@ -157,6 +161,12 @@ export default function Dashboard() {
                     className="btn btn-primary px-2 sm:px-3 py-1 rounded hover:bg-blue-100 text-xs sm:text-sm flex-1 sm:flex-none"
                   >
                     Generate Quiz
+                  </button>
+                  <button
+                    onClick={() => openVideos(pdf.id)}
+                    className="btn btn-primary px-2 sm:px-3 py-1 rounded hover:bg-green-100 text-xs sm:text-sm flex-1 sm:flex-none"
+                  >
+                    Videos
                   </button>
                   <button
                     onClick={() => handleDelete(pdf.id)}
