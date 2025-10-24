@@ -15,16 +15,19 @@ interface ReviseChatSession {
   messages: ReviseChatMessage[];
   created_at: string;
   updated_at: string;
+  pdf_id?: string; // Re-added pdf_id
 }
 
 interface ReviseChatInterfaceProps {
   currentSession: ReviseChatSession | null;
   onSessionUpdate: (session: ReviseChatSession) => void;
+  pdfId: string | null; // Added pdfId prop
 }
 
 const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
   currentSession,
   onSessionUpdate,
+  pdfId, // Destructure pdfId
 }) => {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ReviseChatMessage[]>([]);
@@ -45,6 +48,19 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
 
   const askQuestion = async () => {
     if (!question.trim()) return;
+    // Use the pdfId prop directly
+    if (!pdfId) {
+      console.error("No PDF ID found for the current session. Cannot ask question.");
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: `Please select a PDF to ask questions about.`,
+          timestamp: new Date().toISOString(),
+        },
+      ]);
+      return;
+    }
 
     const userQuestion = question.trim();
     setQuestion("");
@@ -59,9 +75,10 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
     setLoading(true);
 
     try {
-      const res = await axios.post("/revise-chat/ask", {
+      const res = await axios.post("/chat/ask", {
         question: userQuestion,
-        session_id: currentSession?._id || null,
+        pdf_id: pdfId, // Use pdfId prop
+        session_id: currentSession?._id || null, // Keep session_id for chat history management
       });
 
       const newAiMessage: ReviseChatMessage = {
@@ -72,10 +89,11 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
 
       setMessages((prev) => [...prev, newAiMessage]);
 
+      // Update session logic to include pdf_id if it's a new session
       if (res.data.session_id && !currentSession) {
         onSessionUpdate({
           _id: res.data.session_id,
-          user_id: "",
+          user_id: "", // This should ideally come from the backend or context
           title:
             userQuestion.substring(0, 50) +
             (userQuestion.length > 50 ? "..." : ""),
@@ -90,6 +108,7 @@ const ReviseChatInterface: React.FC<ReviseChatInterfaceProps> = ({
           ],
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
+          pdf_id: pdfId, // Use pdfId prop for new session
         });
       } else if (currentSession) {
         onSessionUpdate({
