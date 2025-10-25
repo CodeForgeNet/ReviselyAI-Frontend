@@ -15,7 +15,6 @@ interface ReviseChatSession {
   messages: ReviseChatMessage[];
   created_at: string;
   updated_at: string;
-  pdf_id?: string;
 }
 
 const ReviseChatPage: React.FC = () => {
@@ -148,7 +147,6 @@ const ReviseChatPage: React.FC = () => {
           <ReviseChatInterface
             currentSession={currentSession}
             onSessionUpdate={handleSessionUpdate}
-            pdfId={currentSession?.pdf_id || null}
           />
         </div>
       </div>

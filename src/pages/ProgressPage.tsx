@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 interface AttemptDetail {
   attempt_id: string;
@@ -24,6 +25,7 @@ interface ProgressData {
 export default function ProgressPage() {
   const [progressData, setProgressData] = useState<ProgressData | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProgress = async () => {
@@ -39,6 +41,10 @@ export default function ProgressPage() {
 
     fetchProgress();
   }, []);
+
+  const viewAttemptDetails = (attemptId: string) => {
+    navigate(`/progress/attempt/${attemptId}`);
+  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 my-4 sm:my-8">
@@ -108,9 +114,17 @@ export default function ProgressPage() {
                     <p className="font-bold">{attempt.laq_score}</p>
                   </div>
                 </div>
-                <p className="text-right mt-2 text-gray-700 text-sm sm:text-base">
-                  Overall: {attempt.overall_score}
-                </p>
+                <div className="flex justify-between items-center mt-2">
+                  <p className="text-gray-700 text-sm sm:text-base">
+                    Overall: {attempt.overall_score}
+                  </p>
+                  <button
+                    onClick={() => viewAttemptDetails(attempt.attempt_id)}
+                    className="btn btn-secondary text-sm py-1 px-3"
+                  >
+                    View Details
+                  </button>
+                </div>
               </div>
             ))}
           </div>

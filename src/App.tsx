@@ -16,6 +16,7 @@ import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
+import AttemptDetailsPage from "./pages/AttemptDetailsPage";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -63,6 +64,10 @@ export default function App() {
             element={user ? <ProgressPage /> : <Navigate to="/" />}
           />
           <Route
+            path="/progress/attempt/:attemptId"
+            element={user ? <AttemptDetailsPage /> : <Navigate to="/" />}
+          />
+          <Route
             path="/revisechat"
             element={user ? <ReviseChatPage /> : <Navigate to="/" />}
           />
@@ -80,4 +85,3 @@ export default function App() {
     </div>
   );
 }
-
