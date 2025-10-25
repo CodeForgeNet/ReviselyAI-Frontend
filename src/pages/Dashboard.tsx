@@ -107,6 +107,7 @@ export default function Dashboard() {
             onChange={(e) => setFile(e.target.files?.[0] || null)}
             className="mb-3 border border-gray-600 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 w-full text-sm sm:text-base"
             ref={fileInputRef}
+            disabled={uploading}
           />
           <button
             onClick={uploadPDF}
@@ -153,24 +154,28 @@ export default function Dashboard() {
                   <button
                     onClick={() => openChat(pdf.id)}
                     className="btn btn-primary px-2 sm:px-3 py-1 rounded hover:bg-primary-100 text-xs sm:text-sm flex-1 sm:flex-none"
+                    disabled={uploading}
                   >
                     Ask Questions
                   </button>
                   <button
                     onClick={() => generateQuiz(pdf.id)}
                     className="btn btn-primary px-2 sm:px-3 py-1 rounded hover:bg-blue-100 text-xs sm:text-sm flex-1 sm:flex-none"
+                    disabled={uploading}
                   >
                     Generate Quiz
                   </button>
                   <button
                     onClick={() => openVideos(pdf.id)}
                     className="btn btn-primary px-2 sm:px-3 py-1 rounded hover:bg-green-100 text-xs sm:text-sm flex-1 sm:flex-none"
+                    disabled={uploading}
                   >
                     Videos
                   </button>
                   <button
                     onClick={() => handleDelete(pdf.id)}
                     className="btn btn-danger px-2 sm:px-3 py-1 rounded hover:bg-red-100 text-xs sm:text-sm flex-1 sm:flex-none"
+                    disabled={uploading}
                   >
                     Delete
                   </button>
