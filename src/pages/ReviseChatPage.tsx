@@ -47,7 +47,7 @@ const ReviseChatPage: React.FC = () => {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-        className="lg:hidden absolute top-1 left-1 z-50 bg-primary-600 text-white p-2 rounded-lg shadow-md hover:bg-primary-700 transition-colors"
+        className="lg:hidden absolute top-2 left-2 z-50 bg-primary-600 text-white p-2 rounded-lg shadow-md hover:bg-primary-700 transition-colors"
         aria-label={isDrawerOpen ? "Close menu" : "Open menu"}
       >
         <svg
@@ -129,7 +129,7 @@ const ReviseChatPage: React.FC = () => {
           flex-1
           transition-all duration-300 ease-in-out
           relative
-          ${!isDrawerOpen ? "pl-0" : "pl-0"}
+          ${!isDrawerOpen ? "pl-14" : "pl-0"}
         `}
       >
         <div
